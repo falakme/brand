@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brand Styleguide — Falak.me</title>
+    <meta
+      name="description"
+      content="Interactive styleguide for Falak.me's brand colors and typography."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link href="./style.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@falakme/brand/globals.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@latest/src/duotone/style.css"
+    />
+
+    <!--
+      Prevent flash of unstyled content (FOUC) by applying the saved theme
+      before the first paint. Reads localStorage, falls back to system preference.
+    -->
+    <script>
+      (() => {
+        const saved = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        const isDark = saved === "dark" || (!saved && prefersDark);
+        document.documentElement.classList.toggle("dark", isDark);
+        document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+      })();
+    </script>
+  </head>
+
+  <body
+    class="bg-background text-foreground min-h-screen flex flex-col items-center pt-16 px-5 pb-20 font-body antialiased leading-normal"
+  >
+    <!-- =====================================================================
+         Page wrapper — constrained to max-w-5xl
+    ====================================================================== -->
+    <div class="w-full max-w-5xl flex flex-col gap-12">
+      <!-- Header -->
+      <header class="flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <h1 class="text-5xl font-semibold font-display tracking-normal">
+            Brand System
+          </h1>
+
+          <!-- Header actions: theme toggle, NPM, GitHub -->
+          <nav class="flex items-center gap-5" aria-label="Header actions">
+            <!-- Theme toggle — icon swaps between sun (dark mode) and moon (light mode) -->
+            <button
+              id="theme-toggle"
+              type="button"
+              class="text-muted-foreground hover:text-secondary transition-colors duration-200 flex items-center"
+              aria-label="Toggle dark mode"
+            >
+              <i id="icon-sun" class="ph-duotone ph-sun hidden text-[2rem]"></i>
+              <i
+                id="icon-moon"
+                class="ph-duotone ph-moon hidden text-[2rem]"
+              ></i>
+            </button>
+
+            <a
+              href="https://www.npmjs.com/package/@falakme/brand"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-secondary transition-colors duration-200 flex items-center"
+              aria-label="View on NPM"
+            >
+              <svg
+                role="img"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                width="2rem"
+                height="2rem"
+                fill="currentColor"
+              >
+                <title>npm</title>
+                <path
+                  d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"
+                />
+              </svg>
+            </a>
+
+            <a
+              href="https://www.github.com/falakme/brand"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted-foreground hover:text-secondary transition-colors duration-200 flex items-center"
+              aria-label="View on GitHub"
+            >
+              <svg
+                role="img"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                width="2rem"
+                height="2rem"
+                fill="currentColor"
+              >
+                <title>GitHub</title>
+                <path
+                  d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                />
+              </svg>
+            </a>
+          </nav>
+        </div>
+
+        <p class="text-xl text-muted-foreground">
+          Colors and typography, all in one place.
+        </p>
+
+        <!--
+          RealTimeColors preview links — hidden until tokens are fetched.
+          Shown once buildRealTimeColorsUrl() has run successfully.
+        -->
+        <div
+          id="rt-buttons-container"
+          class="flex flex-wrap items-center gap-3 mt-3 hidden"
+          aria-label="Preview links"
+        >
+          <a
+            id="rt-link-light"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-max px-4 py-2 text-sm font-semibold bg-muted border border-border text-foreground rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all flex items-center gap-2"
+          >
+            Preview Light Mode
+          </a>
+          <a
+            id="rt-link-dark"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-max px-4 py-2 text-sm font-semibold bg-muted border border-border text-foreground rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all flex items-center gap-2"
+          >
+            Preview Dark Mode
+          </a>
+        </div>
+      </header>
+
+      <hr class="border-border border-t-2" />
+    </div>
+
+    <!-- =====================================================================
+         Main content — slightly narrower max-w-4xl for comfortable reading
+    ====================================================================== -->
+    <div class="w-full max-w-4xl flex flex-col gap-12 pt-12 pb-12">
+      <!-- Colors -->
+      <section aria-labelledby="colors-heading">
+        <div class="flex flex-col gap-1 mb-10">
+          <h2 id="colors-heading" class="text-3xl font-semibold font-display">
+            Colors
+          </h2>
+          <p class="text-base text-muted-foreground">
+            Click any format badge to copy the exact value to your clipboard.
+          </p>
+        </div>
+        <div id="color-palettes-container" class="flex flex-col gap-10"></div>
+      </section>
+
+      <hr class="border-border border-t-2 mt-4" />
+
+      <!-- Typography -->
+      <section aria-labelledby="typography-heading">
+        <div class="flex flex-col gap-1 mb-6">
+          <h2
+            id="typography-heading"
+            class="text-3xl font-semibold font-display"
+          >
+            Typography
+          </h2>
+          <p class="text-base text-muted-foreground">
+            The three typefaces that shape the brand's voice. Open each on
+            Google Fonts to explore weights and specimens.
+          </p>
+        </div>
+        <div id="typography-container"></div>
+      </section>
+    </div>
+
+    <!-- =====================================================================
+         Footer
+    ====================================================================== -->
+    <div class="w-full max-w-5xl flex flex-col gap-12">
+      <footer
+        class="w-full max-w-5xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mt-8 pt-8 border-t-2 border-border pb-8"
+      >
+        <div class="flex flex-col gap-2 text-left">
+          <h4
+            class="text-2xl font-semibold font-display tracking-normal text-foreground"
+          >
+            © 2026 Falak.me
+          </h4>
+          <p class="text-base text-muted-foreground leading-relaxed">
+            Built with
+            <a
+              href="https://www.npmjs.com/package/basecoat-css"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground font-medium hover:text-secondary transition-colors underline decoration-border hover:decoration-secondary underline-offset-4"
+              >Basecoat</a
+            >,
+            <a
+              href="https://tailwindcss.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground font-medium hover:text-secondary transition-colors underline decoration-border hover:decoration-secondary underline-offset-4"
+              >Tailwind CSS</a
+            >,
+            <a
+              href="https://fonts.google.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground font-medium hover:text-secondary transition-colors underline decoration-border hover:decoration-secondary underline-offset-4"
+              >Google Fonts</a
+            >,
+            <a
+              href="https://phosphoricons.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground font-medium hover:text-secondary transition-colors underline decoration-border hover:decoration-secondary underline-offset-4"
+              >Phosphor Icons</a
+            >
+            and
+            <a
+              href="https://simpleicons.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground font-medium hover:text-secondary transition-colors underline decoration-border hover:decoration-secondary underline-offset-4"
+              >Simple Icons</a
+            >.
+          </p>
+        </div>
+
+        <nav class="flex items-center gap-5" aria-label="Footer navigation">
+          <a
+            href="https://falak.me"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted-foreground hover:text-secondary transition-colors duration-200 flex items-center"
+            aria-label="Visit falak.me"
+          >
+            <i class="ph-duotone ph-globe text-[2.5rem]"></i>
+          </a>
+        </nav>
+      </footer>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/basecoat-css@latest/dist/js/all.min.js"
+      defer
+    ></script>
+
+    <script>
+      // =========================================================================
+      // Config
+      // =========================================================================
+
+      const TOKENS_URL = "https://unpkg.com/@falakme/brand/tokens.json";
+
+      /** Color categories rendered in this order. */
+      const PALETTE_CATEGORIES = [
+        "primary",
+        "secondary",
+        "accent",
+        "text",
+        "background",
+      ];
+
+      /** Short prose samples that showcase each typeface in context. */
+      const FONT_SAMPLES = {
+        display:
+          "The hum of the warp drive shifted an octave, signaling our arrival at the edge of the known universe.",
+        body: "For three generations, humanity had stared at this exact quadrant through the hazy lenses of orbital telescopes, dreaming of what lay beyond the indigo nebula. Now, pressing my face against the chilled viewport of the Aethelgard, I could see the fracturing crystalline structures of the anomaly with my own eyes. It wasn't just empty space — it was a doorway.",
+        mono: "> INITIALIZING DIAGNOSTICS...\n> HULL INTEGRITY: 98.2%\n> ANOMALY DETECTED:\n  - CLASS: UNKNOWN\n  - SPATIAL DISTORTION: EXTREME\n> AWAITING COMMAND OVERRIDE...",
+      };
+
+      // =========================================================================
+      // DOM references
+      // =========================================================================
+
+      const colorContainer = document.getElementById(
+        "color-palettes-container",
+      );
+      const typoContainer = document.getElementById("typography-container");
+
+      // =========================================================================
+      // Theme
+      // =========================================================================
+
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const iconSun = document.getElementById("icon-sun");
+      const iconMoon = document.getElementById("icon-moon");
+
+      /** Match icon visibility to the active theme. */
+      function syncThemeIcons() {
+        const isDark = document.documentElement.classList.contains("dark");
+        iconSun.classList.toggle("hidden", !isDark);
+        iconMoon.classList.toggle("hidden", isDark);
+      }
+
+      /** Flip theme, persist it, and update icons. Wrapped in View Transition when available. */
+      function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle("dark");
+        document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        syncThemeIcons();
+      }
+
+      syncThemeIcons(); // Run once on load to match the FOUC-prevention script above.
+
+      themeToggleBtn.addEventListener("click", () => {
+        document.startViewTransition
+          ? document.startViewTransition(toggleTheme)
+          : toggleTheme();
+      });
+
+      // =========================================================================
+      // Clipboard
+      // =========================================================================
+
+      /**
+       * Delegate click events on the color grid to handle copy-to-clipboard.
+       * Uses data attributes on the nearest .swatch-card to retrieve the value
+       * for the current theme, avoiding repeated DOM queries.
+       */
+      colorContainer.addEventListener("click", (e) => {
+        const btn = e.target.closest(".copy-btn");
+        if (!btn) return;
+
+        const card = btn.closest(".swatch-card");
+        const format = btn.dataset.format; // "hex" | "rgb" | "oklch"
+        const theme = document.documentElement.classList.contains("dark")
+          ? "Dark"
+          : "Light";
+        const value = card.dataset[`${format}${theme}`]; // e.g. data-hex-light
+
+        navigator.clipboard.writeText(value).then(() => {
+          const originalLabel = btn.textContent;
+          btn.textContent = "Copied!";
+          btn.classList.add(
+            "!bg-accent",
+            "!border-accent",
+            "!text-accent-foreground",
+          );
+
+          setTimeout(() => {
+            btn.textContent = originalLabel;
+            btn.classList.remove(
+              "!bg-accent",
+              "!border-accent",
+              "!text-accent-foreground",
+            );
+          }, 1500);
+        });
+      });
+
+      // =========================================================================
+      // Token helpers
+      // =========================================================================
+
+      /**
+       * Read a single color value from the tokens object.
+       *
+       * @param {object} data      - Parsed tokens.json
+       * @param {'hex'|'rgb'|'oklch'} format
+       * @param {'light'|'dark'} theme
+       * @param {string} category  - e.g. "primary"
+       * @param {string} shade     - "base" | "100" | "200" | …
+       * @returns {string}
+       */
+      function getToken(data, format, theme, category, shade) {
+        // oklch values live directly under data.color[theme];
+        // hex and rgb live under data.color[format][theme].
+        const root =
+          format === "oklch" ? data.color[theme] : data.color[format][theme];
+
+        return shade === "base" ? root.base[category] : root[category][shade];
+      }
+
+      /**
+       * Build a RealTimeColors preview URL from the brand's base tokens.
+       * Encodes text, background, primary, secondary, and accent hex values
+       * plus the display and body font names.
+       *
+       * @param {object} data       - Parsed tokens.json
+       * @param {'light'|'dark'} theme
+       * @returns {string} Full URL
+       */
+      function buildRealTimeColorsUrl(data, theme) {
+        const base = data.color.hex[theme].base;
+        const stripHash = (hex) => hex.replace("#", "");
+
+        const colors = [
+          base.text,
+          base.background,
+          base.primary,
+          base.secondary,
+          base.accent,
+        ]
+          .map(stripHash)
+          .join("-");
+
+        const firstFamily = (str) =>
+          str.split(",")[0].replace(/['"]/g, "").trim();
+        const fonts =
+          `${firstFamily(data.typography.family.display)}-${firstFamily(data.typography.family.body)}`.replace(
+            / /g,
+            "%20",
+          );
+
+        return `https://www.realtimecolors.com/?colors=${colors}&fonts=${fonts}`;
+      }
+
+      // =========================================================================
+      // HTML builders
+      // =========================================================================
+
+      /**
+       * Build the inner markup for one color swatch card.
+       * Stores all theme variants as data attributes so the copy handler
+       * can read them without re-querying the DOM.
+       *
+       * @param {string} shadeName  - Display label, e.g. "Base" | "100"
+       * @param {string} cssVar     - CSS variable reference, e.g. "var(--primary)"
+       * @param {object} tokens     - { hexL, hexD, rgbL, rgbD, oklchL, oklchD }
+       * @returns {string} HTML string
+       */
+      function buildSwatchHTML(shadeName, cssVar, tokens) {
+        const { hexL, hexD, rgbL, rgbD, oklchL, oklchD } = tokens;
+
+        return `
+          <div
+            class="swatch-card flex flex-col rounded-xl border border-border bg-background overflow-hidden"
+            data-hex-light="${hexL}"   data-hex-dark="${hexD}"
+            data-rgb-light="${rgbL}"   data-rgb-dark="${rgbD}"
+            data-oklch-light="${oklchL}" data-oklch-dark="${oklchD}"
+          >
+            <div class="h-20 w-full border-b border-border/50 color-block" style="background-color: ${cssVar}"></div>
+            <div class="p-3 flex flex-col gap-2.5">
+              <span class="font-semibold text-foreground text-sm capitalize">${shadeName}</span>
+              <div class="flex items-center gap-1.5 w-full">
+                <button class="copy-btn flex-1 py-1.5 text-[10px] font-bold tracking-wider bg-muted border border-border text-muted-foreground rounded hover:border-primary hover:bg-primary hover:text-primary-foreground transition-colors" data-format="hex"   aria-label="Copy HEX value">HEX</button>
+                <button class="copy-btn flex-1 py-1.5 text-[10px] font-bold tracking-wider bg-muted border border-border text-muted-foreground rounded hover:border-primary hover:bg-primary hover:text-primary-foreground transition-colors" data-format="rgb"   aria-label="Copy RGB value">RGB</button>
+                <button class="copy-btn flex-1 py-1.5 text-[10px] font-bold tracking-wider bg-muted border border-border text-muted-foreground rounded hover:border-primary hover:bg-primary hover:text-primary-foreground transition-colors" data-format="oklch" aria-label="Copy OKLCH value">OKLCH</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      /**
+       * Build the full markup for one color palette section (e.g. "Primary").
+       * Renders the base swatch first, then all numeric shades in ascending order.
+       *
+       * @param {object} data      - Parsed tokens.json
+       * @param {string} category  - e.g. "primary"
+       * @returns {string} HTML string
+       */
+      function buildPaletteSectionHTML(data, category) {
+        /** Collect all three format values for a given shade in both themes. */
+        const collectTokens = (shade) => ({
+          hexL: getToken(data, "hex", "light", category, shade),
+          hexD: getToken(data, "hex", "dark", category, shade),
+          rgbL: getToken(data, "rgb", "light", category, shade),
+          rgbD: getToken(data, "rgb", "dark", category, shade),
+          oklchL: getToken(data, "oklch", "light", category, shade),
+          oklchD: getToken(data, "oklch", "dark", category, shade),
+        });
+
+        // Base swatch comes first.
+        let swatchesHTML = buildSwatchHTML(
+          "Base",
+          `var(--${category})`,
+          collectTokens("base"),
+        );
+
+        // Numeric shades, sorted ascending (100, 200, 300, …).
+        const numericShades = Object.keys(
+          data.color.hex.light[category] ?? {},
+        ).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+        for (const shade of numericShades) {
+          swatchesHTML += buildSwatchHTML(
+            shade,
+            `var(--${category}-${shade})`,
+            collectTokens(shade),
+          );
+        }
+
+        return `
+          <div class="flex flex-col gap-4">
+            <h3 class="text-2xl font-semibold font-display border-b border-border pb-2 capitalize">${category}</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 palette-grid">${swatchesHTML}</div>
+          </div>
+        `;
+      }
+
+      /**
+       * Build the markup for the typography section.
+       * Each card shows a sample sentence, the font name, and a Google Fonts link.
+       *
+       * @param {{ display: string, body: string, mono: string }} families
+       *   Font-family CSS strings keyed by role.
+       * @returns {string} HTML string
+       */
+      function buildTypographyHTML(families) {
+        const sizeByRole = {
+          display: "text-4xl md:text-5xl",
+          body: "text-xl md:text-2xl",
+          mono: "text-lg md:text-xl",
+        };
+
+        const extraByRole = {
+          display: "leading-relaxed",
+          body: "leading-relaxed",
+          mono: "whitespace-pre-wrap",
+        };
+
+        const cards = Object.entries(families)
+          .map(([role, fontStack]) => {
+            const fontName = fontStack
+              .split(",")[0]
+              .replace(/['"]/g, "")
+              .trim();
+            const googleFontsUrl = `https://fonts.google.com/specimen/${fontName.replace(/ /g, "+")}`;
+            const sample = FONT_SAMPLES[role] ?? "";
+
+            return `
+            <div class="swatch-card flex flex-col rounded-xl border border-border bg-background overflow-hidden">
+              <div class="w-full border-b border-border/50 p-6 md:p-8 bg-muted/30 min-h-[160px] flex items-center">
+                <p class="${sizeByRole[role]} text-foreground font-${role} ${extraByRole[role]}">${sample}</p>
+              </div>
+              <div class="p-4 flex items-center justify-between w-full">
+                <div class="flex flex-col gap-0.5">
+                  <span class="font-semibold text-foreground text-sm capitalize">${role}</span>
+                  <span class="text-xs text-muted-foreground truncate">${fontName}</span>
+                </div>
+                <a href="${googleFontsUrl}" target="_blank" rel="noopener noreferrer"
+                  class="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  aria-label="Open ${fontName} on Google Fonts">
+                  <i class="ph-duotone ph-arrow-up-right text-[1.25rem]"></i>
+                </a>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+
+        return `<div class="flex flex-col gap-6">${cards}</div>`;
+      }
+
+      // =========================================================================
+      // Bootstrap
+      // =========================================================================
+
+      /**
+       * Fetch brand tokens from the NPM CDN, then render colors and typography.
+       * On failure, surfaces an error message inline rather than a silent break.
+       */
+      async function init() {
+        try {
+          const response = await fetch(TOKENS_URL);
+          if (!response.ok)
+            throw new Error(`Unexpected response: HTTP ${response.status}`);
+
+          const data = await response.json();
+
+          // Wire up RealTimeColors preview buttons and reveal them.
+          document.getElementById("rt-link-light").href =
+            buildRealTimeColorsUrl(data, "light");
+          document.getElementById("rt-link-dark").href = buildRealTimeColorsUrl(
+            data,
+            "dark",
+          );
+          document
+            .getElementById("rt-buttons-container")
+            .classList.remove("hidden");
+
+          // Render color palettes.
+          colorContainer.innerHTML = PALETTE_CATEGORIES.map((cat) =>
+            buildPaletteSectionHTML(data, cat),
+          ).join("");
+
+          // Render typography cards.
+          typoContainer.innerHTML = buildTypographyHTML(data.typography.family);
+        } catch (err) {
+          console.error("Failed to load brand tokens:", err);
+          colorContainer.insertAdjacentHTML(
+            "beforeend",
+            `<p class="text-destructive">Couldn't load brand tokens from the NPM registry. Check your connection and try again.</p>`,
+          );
+        }
+      }
+
+      window.addEventListener("load", init);
+    </script>
+  </body>
+</html>

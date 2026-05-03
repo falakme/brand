@@ -1,0 +1,37 @@
+{
+  "name": "@falakme/brand",
+  "version": "1.0.0",
+  "description": "Falak.me brand system — shadcn/ui-compatible CSS tokens, Tailwind config, company logos, fonts, team media, and shared assets used across all our platforms.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/falakme/brand.git"
+  },
+  "module": "index.ts",
+  "type": "module",
+  "private": false,
+  "exports": {
+    ".": "./index.ts",
+    "./tailwind": "./tailwind.config.ts",
+    "./tokens": "./tokens.json",
+    "./socials": "./socials.json",
+    "./globals.css": "./globals.css",
+    "./assets/*": "./assets/*",
+    "./images/*": "./images/*"
+  },
+  "files": [
+    "index.ts",
+    "tailwind.config.ts",
+    "tokens.json",
+    "socials.json",
+    "globals.css",
+    "assets/",
+    "images/"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "tailwindcss": "^4.2.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
