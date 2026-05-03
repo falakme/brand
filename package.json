@@ -1,6 +1,6 @@
 {
   "name": "@falakme/brand",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Falak.me brand system — shadcn/ui-compatible CSS tokens, Tailwind config, company logos, fonts, team media, and shared assets used across all our platforms.",
   "repository": {
     "type": "git",
