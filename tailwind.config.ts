@@ -120,9 +120,9 @@ const config: Config = {
 
       // ── Typography ──────────────────────────────────────────
       fontFamily: {
-        display: ["Instrument Sans", "sans-serif"],
-        body: ["Geist", "sans-serif"],
-        mono: ["Geist Mono", "monospace"],
+        display: ["Montserrat", "sans-serif"],
+        body: ["Fira Sans", "sans-serif"],
+        mono: ["Fira Code", "monospace"],
       },
 
       fontSize: {
